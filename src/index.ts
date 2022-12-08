@@ -22,6 +22,8 @@ StartDiscord().then(() => {
 
     // Sneaky route exposer :)
     readdirSync(_routes).forEach((file) => {
+        if (file.split('.').pop() !== 'js') return;
+
         import(`${_routes}/${file}`).then((x) => {
             app[x.method ?? 'get']('/' + file.replace('.js', ''), async (req: Request, res: Response) => {
                 try {
