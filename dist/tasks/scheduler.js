@@ -1,4 +1,5 @@
 "use strict";
+// Schedule tasks to run every hour
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.startScheduler = void 0;
-var WeeklyRoundUp_1 = require("./WeeklyRoundUp");
 var _Hour = 1000 * 60 * 60 * 12;
 var _Previous = 0;
 function startScheduler() {
@@ -55,7 +55,7 @@ function startScheduler() {
                 if (timeStamp - _Previous < _Hour)
                     return;
                 _Previous = Date.now();
-                (0, WeeklyRoundUp_1.WeeklyRoundUp)();
+                // Hourly scheduler
             }, _Hour);
             return [2 /*return*/];
         });

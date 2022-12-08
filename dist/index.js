@@ -1,5 +1,5 @@
 "use strict";
-// Rovolution Logistics Bot Written By Harvey Randall
+// Simpled local tunnel webserver, for Rovolution
 // https://www.github.com/Gerald12344
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -80,6 +80,8 @@ var _routes = __dirname + '/routes';
     (0, Tunnel_1.setupTunnel)();
     // Sneaky route exposer :)
     (0, fs_1.readdirSync)(_routes).forEach(function (file) {
+        if (file.split('.').pop() !== 'js')
+            return;
         Promise.resolve().then(function () { return __importStar(require("".concat(_routes, "/").concat(file))); }).then(function (x) {
             var _a;
             app[(_a = x.method) !== null && _a !== void 0 ? _a : 'get']('/' + file.replace('.js', ''), function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
