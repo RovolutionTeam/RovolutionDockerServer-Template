@@ -1,4 +1,4 @@
-// Rovolution Logistics Bot Written By Harvey Randall
+// Simpled local tunnel webserver, for Rovolution
 // https://www.github.com/Gerald12344
 
 import { StartDiscord } from './utils/Discord';
