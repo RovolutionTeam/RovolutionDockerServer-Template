@@ -84,7 +84,7 @@ var _routes = __dirname + '/routes';
             return;
         Promise.resolve().then(function () { return __importStar(require("".concat(_routes, "/").concat(file))); }).then(function (x) {
             var _a;
-            app[(_a = x.method) !== null && _a !== void 0 ? _a : 'get']('/' + file.replace('.js', ''), function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+            app[(_a = x === null || x === void 0 ? void 0 : x.method) !== null && _a !== void 0 ? _a : 'get']('/' + file.replace('.js', ''), function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
                 var e_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -109,6 +109,12 @@ var _routes = __dirname + '/routes';
                     }
                 });
             }); });
+        });
+    });
+    // For uptime montoring
+    app.get('/', function (req, res) {
+        res.status(200).json({
+            message: 'OK'
         });
     });
 });

@@ -35,40 +35,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
 exports.setupTunnel = void 0;
-var localtunnel_1 = __importDefault(require("localtunnel"));
+var child_process_1 = require("child_process");
 var Mongodb_1 = require("./Mongodb");
+var mainjson = {
+    // Tricks Cloudflared tunnel to think this one run in the terminal and not as a child proccess
+    PATH: '/usr/local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/Users/harvey/Library/Android/sdk/emulator:/Users/harvey/Library/Android/sdk/platform-tools'
+};
 function setupTunnel() {
     return __awaiter(this, void 0, void 0, function () {
-        var tunnel, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, (0, localtunnel_1["default"])({ port: parseInt(process.env.PORT, 10) })];
-                case 1:
-                    tunnel = _b.sent();
-                    _b.label = 2;
-                case 2:
-                    _b.trys.push([2, 5, , 6]);
-                    return [4 /*yield*/, (0, Mongodb_1.FetchMongo)()];
-                case 3: return [4 /*yield*/, (_b.sent()).db("Rovolution-Utils").collection("Tunnels").updateOne({ name: process.env.TUNNEL_NAME }, { $set: { url: tunnel.url } }, { upsert: true })];
-                case 4:
-                    _b.sent();
-                    console.log("Tunnel URL set");
-                    return [3 /*break*/, 6];
-                case 5:
-                    _a = _b.sent();
-                    console.log("Error setting tunnel url");
-                    return [3 /*break*/, 6];
-                case 6:
-                    tunnel.on('close', function () {
-                        setupTunnel();
-                    });
-                    return [2 /*return*/];
-            }
+        var data;
+        var _this = this;
+        return __generator(this, function (_a) {
+            data = (0, child_process_1.spawn)("cloudflared", ["tunnel", "--url", "http://localhost:".concat(process.env.PORT)], { env: mainjson });
+            data.on('error', function (e) {
+                console.log(e);
+            });
+            //For some reason it uses the error output :shrug:
+            data.stderr.on('data', function (e) { return __awaiter(_this, void 0, void 0, function () {
+                var out, _a;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            out = e.toString().match(/https:\/\/[a-zA-Z0-9-]+\.trycloudflare\.com/g);
+                            if (!out) return [3 /*break*/, 5];
+                            console.log(out[0]);
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 4, , 5]);
+                            return [4 /*yield*/, (0, Mongodb_1.FetchMongo)()];
+                        case 2: return [4 /*yield*/, (_b.sent()).db("Rovolution-Utils").collection("Tunnels").updateOne({ name: process.env.TUNNEL_NAME }, { $set: { url: out[0] } }, { upsert: true })];
+                        case 3:
+                            _b.sent();
+                            console.log("Tunnel URL set");
+                            return [3 /*break*/, 5];
+                        case 4:
+                            _a = _b.sent();
+                            console.log("Error setting tunnel url");
+                            return [3 /*break*/, 5];
+                        case 5: return [2 /*return*/];
+                    }
+                });
+            }); });
+            return [2 /*return*/];
         });
     });
 }

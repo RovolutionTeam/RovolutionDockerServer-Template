@@ -25,7 +25,7 @@ StartDiscord().then(() => {
         if (file.split('.').pop() !== 'js') return;
 
         import(`${_routes}/${file}`).then((x) => {
-            app[x.method ?? 'get']('/' + file.replace('.js', ''), async (req: Request, res: Response) => {
+            app[x?.method ?? 'get']('/' + file.replace('.js', ''), async (req: Request, res: Response) => {
                 try {
                     await x.default(req, res);
                 } catch (e) {
@@ -39,5 +39,12 @@ StartDiscord().then(() => {
                 }
             });
         });
+    });
+
+    // For uptime montoring
+    app.get('/', (req: Request, res: Response) => {
+        res.status(200).json({
+            message: 'OK',
+        })
     });
 });
